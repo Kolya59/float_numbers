@@ -3,11 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
 var fs_1 = __importDefault(require("fs"));
 var rxjs_1 = require("rxjs");
 var operators_1 = require("rxjs/operators");
-var app = express_1.default();
 var Elem = /** @class */ (function () {
     function Elem(val, changed) {
         this._val = val;
@@ -54,13 +52,13 @@ function mergeNumbers(x, y, l) {
                 y.val = x.val;
             }
     }
-    console.log(x, y);
     return [x, y];
 }
 // Parse input.txt data
-var content = fs_1.default.readFileSync('./app/input.txt', 'utf-8').split("\n");
-var l = parseInt(content[0][0]);
-var n = parseInt(content[0][1]);
+var content = fs_1.default.readFileSync('../input.txt', 'utf-8').split("\n");
+var header = content[0].split(' ');
+var l = parseInt(header[0]);
+var n = parseInt(header[1]);
 var items = [];
 // Convert number frequency to Elem frequency
 rxjs_1.from(content[1].split(' ')).pipe(operators_1.map(function (item) { return parseInt(item); })).subscribe(function (next) {
@@ -75,18 +73,13 @@ for (var i = 1; i < n; i++) {
     items[i] = res[1];
 }
 // Count distinct items
-var result = 0;
+var result = 1;
 for (var i = 1; i < n; i++) {
     if (!Elem.isEqual(items[i], items[i - 1])) {
         result++;
     }
 }
+console.log(items);
+console.log(result);
 // Write results
-fs_1.default.writeFileSync('./app/output.txt', JSON.stringify({ items: items, result: result }));
-// Something for correct work
-app.get('/', function (req, res) {
-    res.send({ items: items, result: result });
-});
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
-});
+fs_1.default.writeFileSync('../output.txt', JSON.stringify(result));
